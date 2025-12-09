@@ -1,0 +1,17 @@
+{
+  "name": "task-1-gpp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "generate-keys.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com-personal:Surya2004-janardhan/Task-1-GPP"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
