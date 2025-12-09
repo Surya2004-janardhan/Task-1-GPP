@@ -5,6 +5,8 @@ encrypted_seed.txt
 node_modules/
 npm-debug.log*
 yarn-debug.log*
+RESPONSEFROMAPI.json
+
 yarn-error.log*
 
 # Environment files
