@@ -104,7 +104,6 @@ app.get("/health", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Authentication microservice running on port ${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
 });
 

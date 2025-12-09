@@ -28,3 +28,6 @@
 
 # PEM files should be treated as binary to preserve formatting
 *.pem binary
+
+# Shell scripts should have LF line endings for Unix compatibility
+*.sh text eol=lf

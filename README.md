@@ -64,7 +64,6 @@ Task-1-GPP/
 │   ├── crypto-utils.js    # RSA encryption/decryption/signing
 │   ├── totp-utils.js      # TOTP generation/verification
 │   ├── generate-keys.js   # Key pair generation
-│   ├── request-seed.js    # API seed request
 │   └── test-decrypt.js    # Decryption testing
 ├── keys/                  # Cryptographic keys (committed for demo)
 │   ├── student_private.pem
@@ -97,10 +96,7 @@ npm install
 # Generate RSA key pair
 node util/generate-keys.js
 
-# Request encrypted seed from instructor API
-node util/request-seed.js
-
-# Test decryption
+# Test decryption (optional)
 node util/test-decrypt.js
 
 # Start server
@@ -127,6 +123,16 @@ curl -X POST http://localhost:8080/decrypt-seed \
   -d '{"encrypted_seed":"..."}'
 ```
 
+## Commit Proof Generation
+
+Generate cryptographic proof for Git commits using RSA-PSS signing and OAEP encryption.
+
+```bash
+node util/generate-proof.js [commit-hash]
+```
+
+This creates a proof that can be verified by the instructor using their private key.
+
 ## Docker Deployment
 
 ### Prerequisites
@@ -152,17 +158,17 @@ docker-compose down
 
 ### Cron Job
 
-The container includes an automated cron job that refreshes the seed every 24 hours at 2 AM. The cron job:
+The container includes an automated cron job that logs the current 2FA code every minute. The cron job:
 
-1. Requests new encrypted seed from instructor API
-2. Calls the `/decrypt-seed` endpoint to decrypt and store it
-3. Logs all operations to `/app/logs/cron.log`
+1. Generates current TOTP code from stored seed
+2. Logs timestamp and code to `/app/cron/last_code.txt`
+3. Format: `YYYY-MM-DD HH:MM:SS - 2FA Code: XXXXXX`
 
 ### Volumes
 
 - `keys/`: Persistent storage for RSA keys
 - `data/`: Persistent storage for decrypted seed
-- `logs/`: Application and cron logs
+- `cron/`: 2FA code logs from cron job
 
 ## Security Features
 
@@ -181,7 +187,7 @@ Environment variables:
 
 Cron schedule (in Dockerfile):
 
-- `0 2 * * *`: Daily at 2 AM
+- `* * * * *`: Every minute (2FA code logging)
 
 ## License
 
