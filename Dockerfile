@@ -1,0 +1,37 @@
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm ci --only=production && npm cache clean --force
+
+FROM node:18-alpine
+
+RUN apk add --no-cache dcron curl
+
+RUN addgroup -g 1001 -S appgroup && \
+    adduser -S appuser -u 1001 -G appgroup
+
+WORKDIR /app
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY . .
+
+RUN mkdir -p keys data logs
+
+RUN chmod +x refresh-seed.sh start.sh
+
+RUN chown -R appuser:appgroup /app
+USER appuser
+
+RUN echo "0 2 * * * /app/refresh-seed.sh >> /app/logs/cron.log 2>&1" > /tmp/crontab && \
+    crontab -u appuser /tmp/crontab && \
+    rm /tmp/crontab
+
+EXPOSE 8080
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8080/health || exit 1
+
+CMD ["./start.sh"]

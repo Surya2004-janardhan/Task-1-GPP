@@ -3,12 +3,6 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 
-/**
- * Request encrypted seed from instructor API
- * @param {string} studentId - Your student ID
- * @param {string} githubRepoUrl - Exact GitHub repository URL
- * @param {string} apiUrl - Instructor API endpoint
- */
 async function requestEncryptedSeed(
   studentId,
   githubRepoUrl,
@@ -17,14 +11,12 @@ async function requestEncryptedSeed(
   console.log("🌐 Requesting encrypted seed from instructor API...");
 
   try {
-    // Read student public key
     const publicKeyPem = fs.readFileSync(
       path.join(__dirname, "../keys/student_public.pem"),
       "utf8"
     );
     console.log("📖 Read student public key");
 
-    // Convert to SPKI format
     const publicKey = crypto.createPublicKey(publicKeyPem);
     const publicKeySpki = publicKey.export({
       type: "spki",
@@ -32,7 +24,6 @@ async function requestEncryptedSeed(
     });
     console.log("🔄 Converted public key to SPKI format");
 
-    // Prepare request payload
     const payload = {
       student_id: studentId,
       github_repo_url: githubRepoUrl,
@@ -41,18 +32,16 @@ async function requestEncryptedSeed(
 
     console.log("📤 Sending request to instructor API...");
 
-    // Send POST request
     const response = await axios.post(apiUrl, payload, {
       headers: {
         "Content-Type": "application/json",
       },
-      timeout: 30000, // 30 seconds
+      timeout: 30000,
     });
 
     if (response.data.status === "success") {
       const encryptedSeed = response.data.encrypted_seed;
 
-      // Save encrypted seed
       fs.writeFileSync(
         path.join(__dirname, "../keys/encrypted_seed.txt"),
         encryptedSeed
@@ -72,7 +61,6 @@ async function requestEncryptedSeed(
   }
 }
 
-// Run if called directly with arguments
 if (require.main === module) {
   const studentId = "22MH1A4288";
   const githubRepoUrl = "https://github.com/Surya2004-janardhan/Task-1-GPP";

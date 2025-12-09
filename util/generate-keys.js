@@ -2,21 +2,15 @@ const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 
-/**
- * Generate RSA 4096-bit key pair with public exponent 65537
- * Saves to student_private.pem and student_public.pem
- */
 function generateRSAKeyPair() {
   console.log("🔐 Generating RSA 4096-bit key pair...");
 
   try {
-    // Generate key pair
     const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
-      modulusLength: 4096, // 4096 bits as required
-      publicExponent: 65537, // Standard public exponent
+      modulusLength: 4096,
+      publicExponent: 65537,
     });
 
-    // Export to PEM format (PKCS1 for both)
     const privateKeyPem = privateKey.export({
       type: "pkcs1",
       format: "pem",
@@ -27,14 +21,12 @@ function generateRSAKeyPair() {
       format: "pem",
     });
 
-    // Save private key
     fs.writeFileSync(
       path.join(__dirname, "../keys/student_private.pem"),
       privateKeyPem
     );
     console.log("✅ Private key saved to ../keys/student_private.pem");
 
-    // Save public key
     fs.writeFileSync(
       path.join(__dirname, "../keys/student_public.pem"),
       publicKeyPem
@@ -52,7 +44,6 @@ function generateRSAKeyPair() {
   }
 }
 
-// Run if called directly
 if (require.main === module) {
   generateRSAKeyPair();
 }
