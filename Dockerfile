@@ -8,10 +8,10 @@ RUN npm ci --only=production && npm cache clean --force
 
 FROM node:18-alpine
 
-RUN apk add --no-cache dcron curl
+RUN apk add --no-cache dcron curl su-exec
 
 RUN addgroup -g 1001 -S appgroup && \
-    adduser -S appuser -u 1001 -G appgroup
+  adduser -S appuser -u 1001 -G appgroup
 
 ENV TZ=UTC
 
@@ -25,13 +25,12 @@ RUN mkdir -p keys data logs cron
 RUN chmod +x refresh-seed.sh start.sh
 
 RUN chown -R appuser:appgroup /app
-USER appuser
 
 RUN echo "* * * * * /usr/local/bin/node /app/util/log-2fa.js >> /app/cron/last_code.txt 2>&1" > /tmp/crontab && \
-    crontab -u appuser /tmp/crontab && \
-    rm /tmp/crontab
+  crontab /tmp/crontab && \
+  rm /tmp/crontab
 
-EXPOSE 8080
+# Note: Running as root for demo purposes - in production, use non-root userEXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:8080/health || exit 1
