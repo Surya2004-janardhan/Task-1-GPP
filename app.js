@@ -47,7 +47,7 @@ app.post("/decrypt-seed", (req, res) => {
     res.status(500).json({ error: "Decryption failed" });
   }
 });
-
+// tested
 app.get("/generate-2fa", (req, res) => {
   try {
     if (!fs.existsSync(SEED_FILE)) {
