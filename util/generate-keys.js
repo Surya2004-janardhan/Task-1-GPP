@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const fs = require("fs");
+const path = require("path");
 
 /**
  * Generate RSA 4096-bit key pair with public exponent 65537
@@ -15,7 +16,7 @@ function generateRSAKeyPair() {
       publicExponent: 65537, // Standard public exponent
     });
 
-    // Export to PEM format (PKCS1 for compatibility)
+    // Export to PEM format (PKCS1 for both)
     const privateKeyPem = privateKey.export({
       type: "pkcs1",
       format: "pem",
@@ -27,12 +28,18 @@ function generateRSAKeyPair() {
     });
 
     // Save private key
-    fs.writeFileSync("student_private.pem", privateKeyPem);
-    console.log("✅ Private key saved to student_private.pem");
+    fs.writeFileSync(
+      path.join(__dirname, "../keys/student_private.pem"),
+      privateKeyPem
+    );
+    console.log("✅ Private key saved to ../keys/student_private.pem");
 
     // Save public key
-    fs.writeFileSync("student_public.pem", publicKeyPem);
-    console.log("✅ Public key saved to student_public.pem");
+    fs.writeFileSync(
+      path.join(__dirname, "../keys/student_public.pem"),
+      publicKeyPem
+    );
+    console.log("✅ Public key saved to ../keys/student_public.pem");
 
     console.log(
       "\n⚠️  SECURITY WARNING: These keys will be committed to Git and become PUBLIC."
