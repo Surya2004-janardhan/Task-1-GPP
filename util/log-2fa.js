@@ -18,9 +18,9 @@ function logCurrent2FACode() {
     const now = new Date();
     const timestamp = now.toISOString().replace("T", " ").substring(0, 19);
 
-    const logLine = `${timestamp} - 2FA Code: ${code}`;
+    const logLine = `${timestamp} - 2FA Code: ${code}\n`;
 
-    console.log(logLine);
+    process.stdout.write(logLine);
   } catch (error) {
     console.error("Error generating 2FA code:", error.message);
   }
