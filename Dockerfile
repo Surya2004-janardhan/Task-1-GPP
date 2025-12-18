@@ -30,7 +30,7 @@ RUN echo "* * * * * /usr/local/bin/node /app/util/log-2fa.js >> /app/cron/last_c
   crontab /tmp/crontab && \
   rm /tmp/crontab
 
-# Note: Running as root for demo purposes - in production, use non-root userEXPOSE 8080
+EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:8080/health || exit 1
