@@ -22,8 +22,6 @@ COPY . .
 
 RUN mkdir -p keys data logs cron
 
-RUN chmod +x refresh-seed.sh start.sh
-
 RUN chown -R appuser:appgroup /app
 
 RUN echo "* * * * * /usr/local/bin/node /app/util/log-2fa.js >> /app/cron/last_code.txt 2>&1" > /tmp/crontab && \
@@ -35,4 +33,4 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:8080/health || exit 1
 
-CMD ["./start.sh"]
+CMD ["/bin/sh", "-c", "crond && node app.js"]
