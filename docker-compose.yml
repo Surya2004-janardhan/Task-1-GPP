@@ -4,11 +4,12 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./keys:/app/keys
-      - ./data:/app/data
-      - ./cron:/app/cron
+      - seed-data:/data
+      - cron-output:/cron
+      - ./keys:/app/keys:ro
     environment:
       - NODE_ENV=production
+      - TZ=UTC
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
@@ -16,17 +17,7 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-    networks:
-      - auth-network
-
-networks:
-  auth-network:
-    driver: bridge
 
 volumes:
-  keys:
-    driver: local
-  data:
-    driver: local
-  logs:
-    driver: local
+  seed-data:
+  cron-output:

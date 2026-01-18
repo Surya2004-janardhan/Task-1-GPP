@@ -1,10 +1,10 @@
 const fs = require("fs");
-const path = require("path");
 const { generateTOTPCode } = require("./totp-utils");
 
 function logCurrent2FACode() {
   try {
-    const seedFile = path.join(__dirname, "../data/seed.txt");
+    // Use absolute path for Docker container
+    const seedFile = "/data/seed.txt";
 
     if (!fs.existsSync(seedFile)) {
       console.error("Seed file not found");
@@ -15,8 +15,15 @@ function logCurrent2FACode() {
 
     const code = generateTOTPCode(hexSeed);
 
+    // Get UTC timestamp in format: YYYY-MM-DD HH:MM:SS
     const now = new Date();
-    const timestamp = now.toISOString().replace("T", " ").substring(0, 19);
+    const year = now.getUTCFullYear();
+    const month = String(now.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(now.getUTCDate()).padStart(2, "0");
+    const hours = String(now.getUTCHours()).padStart(2, "0");
+    const minutes = String(now.getUTCMinutes()).padStart(2, "0");
+    const seconds = String(now.getUTCSeconds()).padStart(2, "0");
+    const timestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
     const logLine = `${timestamp} - 2FA Code: ${code}\n`;
 

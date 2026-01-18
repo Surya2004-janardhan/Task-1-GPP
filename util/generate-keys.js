@@ -12,29 +12,29 @@ function generateRSAKeyPair() {
     });
 
     const privateKeyPem = privateKey.export({
-      type: "pkcs1",
+      type: "pkcs8",
       format: "pem",
     });
 
     const publicKeyPem = publicKey.export({
-      type: "pkcs1",
+      type: "spki",
       format: "pem",
     });
 
     fs.writeFileSync(
       path.join(__dirname, "../keys/student_private.pem"),
-      privateKeyPem
+      privateKeyPem,
     );
     console.log("✅ Private key saved to ../keys/student_private.pem");
 
     fs.writeFileSync(
       path.join(__dirname, "../keys/student_public.pem"),
-      publicKeyPem
+      publicKeyPem,
     );
     console.log("✅ Public key saved to ../keys/student_public.pem");
 
     console.log(
-      "\n⚠️  SECURITY WARNING: These keys will be committed to Git and become PUBLIC."
+      "\n⚠️  SECURITY WARNING: These keys will be committed to Git and become PUBLIC.",
     );
     console.log("   DO NOT reuse these keys for any other purpose!");
     console.log("   Generate new keys for any production use.");

@@ -1,6 +1,5 @@
 const express = require("express");
 const fs = require("fs");
-const path = require("path");
 
 const { loadPrivateKey, decryptSeed } = require("./util/crypto-utils");
 const {
@@ -14,8 +13,9 @@ const PORT = 8080;
 
 app.use(express.json());
 
-const DATA_DIR = "./data";
-const SEED_FILE = path.join(DATA_DIR, "seed.txt");
+// Use absolute paths for Docker volumes
+const DATA_DIR = "/data";
+const SEED_FILE = `${DATA_DIR}/seed.txt`;
 
 app.post("/decrypt-seed", (req, res) => {
   try {
@@ -89,7 +89,7 @@ app.post("/verify-2fa", (req, res) => {
     const isValid = verifyTOTPCode(hexSeed, code, 1);
 
     console.log(
-      `🔍 Verified 2FA code: ${code} -> ${isValid ? "valid" : "invalid"}`
+      `🔍 Verified 2FA code: ${code} -> ${isValid ? "valid" : "invalid"}`,
     );
 
     res.json({ valid: isValid });
